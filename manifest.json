@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "Extension iframe tester: correct web-request details",
-    "description": "This extension tests intercepted web-request details for iframe web-page loads, and ajax calls",
+    "name": "Extension tester: correct web-request details for content-script ajax calls",
+    "description": "This extension tests correctness of intercepted web-request details for content-script ajax calls",
     "version": "0.1",
     "icons": {
         "19":"img/icon-19px.png",
