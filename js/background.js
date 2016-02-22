@@ -5,19 +5,23 @@ var runTests = function(resultPort, managedFrame) {
     var ajaxUrl = 'http://localhost:8000/tests/content-script-ajax.html';
 
     var observer = null;
+    var resultTimeoutMs = 3000;
+
+    var pageUrlDetails = null;
+    var ajaxUrlDetails = null;
 
     console.log('\nTesting tabIds and frameIds in frame: ' + managedFrame.name());
 
     new Promise(function (resolve) {
-        var pageUrlDetails = null;
-        var ajaxUrlDetails = null;
+
 
         observer = function(details) {
             var urlDetails = function(details) {
                 return {
                   url: details.url,
                   tabId: details.tabId,
-                  frameId: details.frameId
+                  frameId: details.frameId,
+                  timeout: false
                 };
             };
 
@@ -41,8 +45,22 @@ var runTests = function(resultPort, managedFrame) {
         setTimeout(function() {
             managedFrame.open(pageUrl);
         }, 1000);
+    }).timeout(resultTimeoutMs).catch(Promise.TimeoutError, function () {
+        console.log('Failed to intercept relevant web requests');
 
+        var urlTimeoutDetails = function(url) {
+            return {
+                url: url,
+                tabId: 'no-tabid-seen',
+                frameId: 'no-frameid-seen',
+                timeout: true
+            };
+        };
 
+        resolve({
+            pageUrlDetails: (pageUrlDetails !== null) ? pageUrlDetails : urlTimeoutDetails(pageUrl),
+            ajaxUrlDetails: (ajaxUrlDetails !== null) ? ajaxUrlDetails : urlTimeoutDetails(ajaxUrl)
+        });
     }).then(function (results) {
         managedFrame.close();
         chrome.webRequest.onBeforeRequest.removeListener(observer);
@@ -50,9 +68,11 @@ var runTests = function(resultPort, managedFrame) {
 
         var wasSuccess = (results.pageUrlDetails.tabId === results.ajaxUrlDetails.tabId) &&
             (results.pageUrlDetails.frameId === results.ajaxUrlDetails.frameId);
-
         var message = wasSuccess ? 'tabId+frameId match for framed-page-request and content-script ajax-request' :
                                    'tabId+frameId do not match for framed-page-request and content-script ajax-request';
+
+        var wasTimeout = (results.pageUrlDetails.timeout === true) || (results.ajaxUrlDetails.timeout === true);
+        message = wasTimeout ? 'Test issue: did not intercept web-request, implying content-script did not run?' : message;
 
         var annotatedResults = {
             frameType: managedFrame.name(),
