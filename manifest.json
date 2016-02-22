@@ -22,6 +22,14 @@
           "js/background.js"
         ]
     },
+    "content_scripts": [
+      {
+        "js": [ "js/content.js" ],
+        "all_frames": true,
+        "matches": [ "http://*/*page.html" ],
+        "run_at": "document_end"
+      }
+    ],
     "permissions": [
       "http://*/*",
       "https://*/*",

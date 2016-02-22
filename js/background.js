@@ -1,8 +1,8 @@
 var runTests = function(resultPort, managedFrame) {
     console.log('** Running tests **');
 
-    var pageUrl = chrome.extension.getURL('tests/page.html');
-    var ajaxUrl = chrome.extension.getURL('tests/page-ajax-beacon.html');
+    var pageUrl = 'http://localhost:8000/tests/page.html';
+    var ajaxUrl = 'http://localhost:8000/tests/content-script-ajax.html';
 
     var observer = null;
 
@@ -51,8 +51,8 @@ var runTests = function(resultPort, managedFrame) {
         var wasSuccess = (results.pageUrlDetails.tabId === results.ajaxUrlDetails.tabId) &&
             (results.pageUrlDetails.frameId === results.ajaxUrlDetails.frameId);
 
-        var message = wasSuccess ? 'tabId+frameId match for framed-page-request and ajax-request' :
-                                   'tabId+frameId do not match for framed-page-request and ajax-request';
+        var message = wasSuccess ? 'tabId+frameId match for framed-page-request and content-script ajax-request' :
+                                   'tabId+frameId do not match for framed-page-request and content-script ajax-request';
 
         var annotatedResults = {
             frameType: managedFrame.name(),
