@@ -41,7 +41,7 @@ var iframeLoader = function() {
 
     var newListeningManagedIframe = function(win) {
         var actOnMessage = function(iframe, message) {
-            if (message.url) {
+            if ((message !== null) && message.url) {
                 iframe.openUrl(message.url);
             };
         };

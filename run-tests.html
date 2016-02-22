@@ -6,29 +6,21 @@
 </head>
 <body>
     <h1>Test runner</h1>
-    <h2 style="background-color: palevioletred">Important note</h2>
-    <p>For this test extension to run properly, you need a 'static' web-server running, to represent a 'remote' website. To do this, run
-    <ul>
-        <li>cd location-of-this-extension-on-disc</li>
-        <li>ruby -run -ehttpd . -p8000</li>
-    </ul>
-    We're using ruby to run a static web-server on port 8000, returning files from the extension folder. If you don't have ruby,
-    try another <a href="https://gist.github.com/willurd/5720255">one-liner</a>.
     <h2>What's going on</h2>
-    <p>We're testing reuse of iframes to load web-pages (using iframe.src=new-url).
-        Specifically, we're checking that an extension's content script is loaded for each web-page loaded in the iframe.
+    <p>We're testing web-request interception for an iframe-loaded web-page (iframe.src=url), and ajax calls made inside that web-page.
+        Specifically, we're checking that the reported tabId and frameId match, in both types of web-request.
     </p>
     <p>
-       Opening this web-page triggers the tests. An iframe is created, either on the extension's background page, or on a visible tab. The iframe loads two web-pages in sequence
-        (by setting iframe.src). On web-page load, an extension content-script runs, opens a port, and sends message back to the extension's background script (value of document.title).
+       Opening this web-page triggers the tests. An iframe is created, either on the extension's background page, or on a visible tab. The iframe loads a web-page, which makes
+        an ajax call. Both web-requests are intercepted using a chrome.webRequest.onBeforeRequest listener.
     </p>
-    <p>We expect the extension background-script to receive messages from both web-pages. To see if this happened:
+    <p>For both intercepted web-requests, we expect the tabId and frameId to match. To see if this happened:
         <ul>
-            <li>From the Chrome extensions page, view the extension console log using: 'Inspect views: background page'. The messages are output there</li>
+            <li>From the Chrome extensions page, view the extension console log using: 'Inspect views: background page'. Web-request details are output there</li>
             <li>Or, look at the 'Outcome' and 'Status' and sections below. They should be updated once the tests has run.</li>
         </ul>
     </p>
-    <p>Chrome 50 behaves as expected: messages are received.</p>
+    <p>Chrome 50 behaves as expected: tabId and frameId match for all requests.</p>
     <h2>Outcome</h2>
     <div id="outcome"></div>
     <h2>Status</h2>

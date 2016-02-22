@@ -28,7 +28,10 @@ var runTests = function(resultPort, managedFrame) {
             }
 
             if ((pageUrlDetails !== null) && (ajaxUrlDetails !== null)) {
-                resolve([ pageUrlDetails, ajaxUrlDetails ]);
+                resolve({
+                    pageUrlDetails: pageUrlDetails,
+                    ajaxUrlDetails: ajaxUrlDetails
+                });
             }
         };
 
@@ -44,9 +47,12 @@ var runTests = function(resultPort, managedFrame) {
         managedFrame.close();
         chrome.webRequest.onBeforeRequest.removeListener(observer);
 
-        var wasSuccess = true;
 
-        var message = 'I am success message';
+        var wasSuccess = (results.pageUrlDetails.tabId === results.ajaxUrlDetails.tabId) &&
+            (results.pageUrlDetails.frameId === results.ajaxUrlDetails.frameId);
+
+        var message = wasSuccess ? 'tabId+frameId match for framed-page-request and ajax-request' :
+                                   'tabId+frameId do not match for framed-page-request and ajax-request';
 
         var annotatedResults = {
             frameType: managedFrame.name(),

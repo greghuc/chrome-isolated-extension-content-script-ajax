@@ -1,6 +1,5 @@
 var testFrame = function(frameType, onComplete) {
     var statusElement = document.getElementById('status');
-    statusElement.innerHTML += '<div>Loading multiple web-pages (with content scripts) in ' + frameType + '..</div>';
     statusElement.innerHTML += '<div>Waiting for test results..</div>';
 
     var port = chrome.runtime.connect({ name: 'run-tests#' + frameType });
@@ -19,13 +18,9 @@ var testFrame = function(frameType, onComplete) {
     });
 };
 
-// testFrame('background-iframe', function() {
-//     testFrame('inactive-tab-iframe', function() {
-//         testFrame('inactive-tab-top-frame', function() {});
-//     });
-// });
+testFrame('inactive-tab-iframe', function() {
+    testFrame('background-iframe', function() {
+        testFrame('inactive-tab-top-frame', function() {});
+    });
+});
 
-
-// testFrame('inactive-tab-top-frame', function() {});
-// testFrame('background-iframe', function() {});
-testFrame('inactive-tab-iframe', function() {});

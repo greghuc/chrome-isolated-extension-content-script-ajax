@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "Content-script tester: repeated frame use",
-    "description": "This extension tests content-script behaviour for repeated iframe use",
+    "name": "Extension iframe tester: correct web-request details",
+    "description": "This extension tests intercepted web-request details for iframe web-page loads, and ajax calls",
     "version": "0.1",
     "icons": {
         "19":"img/icon-19px.png",
