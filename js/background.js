@@ -57,10 +57,10 @@ var runTests = function(resultPort, managedFrame) {
             };
         };
 
-        resolve({
+        return {
             pageUrlDetails: (pageUrlDetails !== null) ? pageUrlDetails : urlTimeoutDetails(pageUrl),
             ajaxUrlDetails: (ajaxUrlDetails !== null) ? ajaxUrlDetails : urlTimeoutDetails(ajaxUrl)
-        });
+        };
     }).then(function (results) {
         managedFrame.close();
         chrome.webRequest.onBeforeRequest.removeListener(observer);
